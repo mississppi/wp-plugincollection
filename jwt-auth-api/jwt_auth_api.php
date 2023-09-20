@@ -12,7 +12,7 @@ class jwtAuth
 
     public function register_endpoints()
     {
-        register_rest_route('auth/v1', '/data', [
+        register_rest_route('jwt-auth/v1', '/token', [
                 'methods' => 'POST',
                 'callback' => [$this,'auth'],
                 'permission_callback' => [$this,'permission_check'],
@@ -21,21 +21,16 @@ class jwtAuth
 
     public function auth($request)
     {
-        $secret = getenv('JWT_SECRET_KEY');
-        $data = $request->get_json_params();
-        if(is_null($data)){
-            return new WP_Error('invalid_json', 'Invalid JSON data.', array('status' => 400));
-        }
-        $name = isset($data['username']) ? sanitize_text_field($data['username']) : '';
-        $pass = isset($data['password']) ? sanitize_text_field($data['password']) : '';
-        if(empty($name) || empty($pass)){
+        $username   = $request->get_param( 'username' );
+		$password   = $request->get_param( 'password' );
+        if(empty($username) || empty($password)){
             return new WP_Error('invalid_data', 'Username and password are required.', array('status' => 400));
         }
-        $user = wp_authenticate($name, $pass);
+        $user = wp_authenticate($username, $password);
         if (is_wp_error($user)){
             return new WP_Error('authentication_failed', 'Authentication failed.', array('status' => 401));
         } else {
-            $token = $this->generate_jwt_token($name, $secret);
+            $token = $this->generate_jwt_token($user->data->ID, $user);
             return ['token' => $token];
         }
     }
@@ -45,13 +40,43 @@ class jwtAuth
         return true;
     }
 
-    public function generate_jwt_token($name, $secret)
+    public function generate_jwt_token($user_id, $user)
     {
+        $secret = defined( 'JWT_AUTH_SECRET_KEY' ) ? JWT_AUTH_SECRET_KEY : false;
+
         $token = [
-            'username' => $name,
+            'data' => [
+				'user' => [
+					'id' => $user_id,
+				],
+            ],
             'exp' => time() + 3600,
-        ];
-        return JWT::encode($token, $secret, 'HS256');
+        ]; 
+
+        $alg = 'SHA256';
+        return $this->encode($token, $user, $secret, $alg);
+    }
+
+    public function encode($payload, $user, $secret, $alg)
+    {
+        $segments = [];
+        $header = ['typ' => 'JWT', 'alg' => 'SHA256'];
+        $segments[] = $this->urlsafeB64Encode((string) $this->jsonEncode($header));
+        $segments[] = $this->urlsafeB64Encode((string) $this->jsonEncode($payload));
+        $signing_input = \implode('.', $segments);
+        $signature = \hash_hmac($alg, $signing_input, $secret, true);
+        $segments[] = $this->urlsafeB64Encode($signature);
+        return \implode('.', $segments);
+    }
+
+    public function urlsafeB64Encode($input)
+    {
+        return \str_replace('=', '', \strtr(\base64_encode($input), '+/', '-_'));
+    }
+
+    public function jsonEncode($input)
+    {
+        return \json_encode($input, \JSON_UNESCAPED_SLASHES);
     }
 
 }
