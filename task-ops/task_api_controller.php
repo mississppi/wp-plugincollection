@@ -1,5 +1,7 @@
 <?php
 class taskApiController extends WP_REST_Posts_Controller{
+    private $remove_key = ['date_gmt', 'type', 'guid', 'modified_gmt', 'link', 'template', '_links'];
+
     public function __construct()
     {
         parent::__construct('task');
@@ -65,10 +67,10 @@ class taskApiController extends WP_REST_Posts_Controller{
         if(isset($response->data)){
             $result = [];
             foreach($response->data as $post){
-
-                //removeしたいキーをここで設定
-                if(array_key_exists('_links', $post)){
-                    unset($post['_links']);
+                foreach($this->remove_key as $key){
+                    if(array_key_exists($key, $post)){
+                        unset($post[$key]);
+                    }
                 }
                 $result[] = $post;
             }
