@@ -18,7 +18,7 @@ class FacebookPosting
     /**
      * Facebookに投稿するメソッド
      *
-     * WordPressの投稿が挿入または更新されると呼び出される。指定条件に基づいて
+     * WordPressの投稿が挿入または更新されると呼び出される。指定条件に基づき
      * Facebookに投稿を行います。
      *
      * @param int $post_id 投稿ID
