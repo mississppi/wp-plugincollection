@@ -4,7 +4,9 @@ class DashBoardHelper
 {
     public function __construct()
     {
-        //posttype追加
+        // カスタム投稿タイプを登録し、ダッシュボードウィジェットを登録します
+
+        // カスタム投稿タイプ 'dashboard_note' を登録
         add_action('init', [$this, 'create_type'], 20);
 
         //ダッシュボードウィジェットへ登録
