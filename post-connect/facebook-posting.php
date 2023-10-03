@@ -1,13 +1,31 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php'; 
 
+/**
+ * Facebookに投稿するクラスです。
+ */
 class FacebookPosting
 {
+    /**
+     * FacebookPostingクラスのコンストラクタで
+     * WordPressのwp_insert_postアクションにフックして投稿をFacebookにポストします。
+     */
     public function __construct()
     {
         add_action('wp_insert_post', [$this,'post_to_facebook'], 10, 3);
     }
 
+    /**
+     * Facebookに投稿するメソッド
+     *
+     * WordPressの投稿が挿入または更新されると呼び出される。指定条件に基づいて
+     * Facebookに投稿を行います。
+     *
+     * @param int $post_id 投稿ID
+     * @param WP_Post $post 投稿オブジェクト
+     * @param bool $update 投稿が更新された場合はtrue、それ以外はfalse
+     * @return void
+     */
     public function post_to_facebook($post_id, $post, $update )
     {
         // if($post->post_status === 'publish'){
