@@ -1,4 +1,13 @@
 <?php
+/**
+ * taskApiControllerクラスはカスタムエンドポイントを操作するためのコントローラーです。
+ *
+ * このクラスはタスクに関連するデータを取得、作成、更新、削除するためのエンドポイントを提供します。
+ * タスクデータの操作には権限チェックが含まれます。
+ *
+ * 
+ * 
+ */
 class taskApiController extends WP_REST_Posts_Controller{
     private $remove_key = ['date_gmt', 'type', 'guid', 'modified_gmt', 'link', 'template', '_links'];
 
@@ -62,6 +71,14 @@ class taskApiController extends WP_REST_Posts_Controller{
         );
     }
 
+    /**
+     * タスクの一覧を取得します。
+     *
+     * この関数は REST API エンドポイントからタスクの一覧を取得します。一部の不要なフィールドを除外します。
+     *
+     * @param WP_REST_Request $request REST API リクエストオブジェクト。
+     * @return WP_REST_Response REST API レスポンスオブジェクト。
+     */
     public function get_items($request) {
         $response = parent::get_items($request);
         if(isset($response->data)){
