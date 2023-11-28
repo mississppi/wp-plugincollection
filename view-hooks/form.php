@@ -1,5 +1,5 @@
 <div class="wrap">
-    <h2>フックデバッグ</h2>
+    <h2>デバッグ</h2>
     <form method="post" action="">
         <table class="form-table">
             <tr>

@@ -18,7 +18,8 @@ class AsyncDebugLog
     {
         $file = date("Ymd") . ".txt";
         $date = date("YmdHisu");
-        $current = "[$date]: $data" . "\n";
+        $data = serialize($data);
+        $current =  "[$date]: $data" . "\n";
         file_put_contents(__DIR__ . "/" . $file, $current, FILE_APPEND);
     }
 }

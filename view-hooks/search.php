@@ -34,7 +34,7 @@ if(array_key_exists('hook_name',$_POST)){
         <table class="wp-list-table widefat fixed">
             <thead>
                 <tr>
-                    <th><?php echo $search_hook ?></th>
+                    <th><?php echo "フック名:" . $search_hook ?></th>
                 </tr>
             </thead>
             <tbody>

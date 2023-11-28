@@ -1,5 +1,5 @@
 <?php
-
+include_once(dirname(plugin_dir_path(__FILE__)) . '/async-debug-log/async_debug_log.php');
 class apiToJson
 {
     /**
@@ -9,6 +9,12 @@ class apiToJson
      */
     public function __construct()
     {
+        // $seri = get_option('cron');
+        // var_dump($seri); exit;
+        // $debug = new AsyncDebugLog();
+        // $debug->debug('ho');
+        // var_dump($debug); exit;
+        // add_action('transition_post_status', [$this, 'outputJson'], 10, 3);
         add_action('transition_post_status', [$this, 'outputJson'], 10, 3);
     }
 

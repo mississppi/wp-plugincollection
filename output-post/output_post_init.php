@@ -10,7 +10,8 @@ class outputPostInit
 
     public function initIncludeFile()
     {
-        include_once('api_to_json.php');
+        // include_once('api_to_json.php');
+        include_once('test_to_image.php');
     }
 
     public function includeFile()
